@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Проверка интерфейса</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255,255,255,.075), transparent 28%),
+        radial-gradient(circle at 90% 85%, rgba(255,255,255,.055), transparent 32%),
+        linear-gradient(135deg, #0f0f0f, #1a1a1a, #101010);
+      color: #f2f2f2;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .line {
+      position: fixed;
+      width: 1px;
+      height: 150vh;
+      background: rgba(255,255,255,.035);
+      transform: rotate(23deg);
+      animation: lineMove 11s linear infinite;
+      z-index: 0;
+    }
+
+    .line:nth-child(1) { left: 12%; animation-delay: 0s; }
+    .line:nth-child(2) { left: 45%; animation-delay: 3s; }
+    .line:nth-child(3) { left: 78%; animation-delay: 6s; }
+
+    @keyframes lineMove {
+      from { top: -130%; }
+      to { top: 80%; }
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 435px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      min-height: 460px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 28px 70px rgba(0,0,0,.35);
+      backdrop-filter: blur(18px);
+      animation: appear .45s ease;
+      overflow: hidden;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #9d9d9d;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.65;
+      color: #cecece;
+      margin-bottom: 22px;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: #f1f1f1;
+      color: #111;
+      border-radius: 15px;
+      padding: 15px 16px;
+      font-size: 15px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: .22s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: #fff;
+    }
+
+    button:active {
+      transform: scale(.985);
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .ghost {
+      background: transparent;
+      color: #d4d4d4;
+      border: 1px solid rgba(255,255,255,.14);
+    }
+
+    .ghost:hover {
+      background: rgba(255,255,255,.06);
+    }
+
+    .muted {
+      color: #8e8e8e;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 16px;
+      min-height: 20px;
+    }
+
+    .box {
+      border: 1px solid rgba(255,255,255,.11);
+      background: rgba(255,255,255,.045);
+      border-radius: 18px;
+      padding: 15px;
+      margin: 17px 0;
+    }
+
+    .box p {
+      margin-bottom: 0;
+      font-size: 15px;
+    }
+
+    .progress {
+      height: 5px;
+      width: 100%;
+      background: rgba(255,255,255,.08);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 26px;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #eaeaea;
+      border-radius: 99px;
+      transition: .35s ease;
+    }
+
+    .question {
+      font-size: 23px;
+      font-weight: 620;
+      line-height: 1.3;
+      letter-spacing: -0.03em;
+      margin-bottom: 17px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 10px;
+    }
+
+    .answer {
+      text-align: left;
+      color: #e7e7e7;
+      background: rgba(255,255,255,.065);
+      border: 1px solid rgba(255,255,255,.09);
+      font-weight: 500;
+    }
+
+    .answer:hover {
+      background: rgba(255,255,255,.105);
+      transform: translateX(3px);
+    }
+
+    .comment {
+      color: #8e8e8e;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 17px;
+      min-height: 38px;
+    }
+
+    .typing {
+      min-height: 115px;
+      font-size: 20px;
+      line-height: 1.5;
+      font-weight: 560;
+      color: #eeeeee;
+      margin-top: 70px;
+    }
+
+    .cursor::after {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 20px;
+      background: #f1f1f1;
+      margin-left: 4px;
+      transform: translateY(4px);
+      animation: blink .8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 45% { opacity: 1; }
+      46%, 100% { opacity: 0; }
+    }
+
+    .main-result {
+      font-size: 28px;
+      line-height: 1.25;
+      font-weight: 680;
+      letter-spacing: -0.04em;
+      margin: 26px 0 18px;
+    }
+
+    .details {
+      border-top: 1px solid rgba(255,255,255,.12);
+      margin-top: 22px;
+      padding-top: 22px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: 1s ease;
+      pointer-events: none;
+    }
+
+    .details.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .important {
+      font-size: 23px;
+      line-height: 1.38;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      margin-bottom: 14px;
+    }
+
+    .safe-note {
+      color: #b8b8b8;
+      font-size: 14px;
+      line-height: 1.55;
+      border-left: 2px solid rgba(255,255,255,.23);
+      padding-left: 12px;
+      margin: 12px 0 18px;
+    }
+
+    .tiny {
+      font-size: 12px;
+      color: #777;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .dot-zone {
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      background: rgba(255,255,255,.75);
+      cursor: pointer;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,.14); }
+      50% { transform: scale(1.18); box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+    }
+
+    .effect-attention {
+      animation: attention 1s ease-in-out 3;
+      box-shadow: 0 0 0 0 rgba(255,255,255,.3);
+    }
+
+    @keyframes attention {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 0 rgba(255,255,255,.25);
+      }
+      50% {
+        transform: translateY(-3px) scale(1.025);
+        box-shadow: 0 0 0 10px rgba(255,255,255,0);
+      }
+    }
+
+    .break-place {
+      position: relative;
+      min-height: 66px;
+      margin-top: 10px;
+    }
+
+    #refuseBtn {
+      position: relative;
+      z-index: 2;
+    }
+
+    #refuseBtn.broken {
+      opacity: 0;
+      transform: scale(.92) rotate(-2deg);
+      pointer-events: none;
+    }
+
+    .piece {
+      position: absolute;
+      width: 58px;
+      height: 36px;
+      background: rgba(241,241,241,.92);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 9px;
+      left: 50%;
+      top: 12px;
+      opacity: 0;
+      transform: translate(-50%, 0) rotate(0deg) scale(.7);
+      box-shadow: 0 10px 22px rgba(0,0,0,.28);
+      z-index: 3;
+    }
+
+    .piece::after {
+      content: "";
+      display: block;
+      width: 55%;
+      height: 2px;
+      background: rgba(0,0,0,.24);
+      margin: 16px auto 0;
+      border-radius: 999px;
+    }
+
+    .break-place.arrow .piece {
+      opacity: 1;
+    }
+
+    .break-place.arrow .p1 { animation: p1 .75s forwards ease-out; }
+    .break-place.arrow .p2 { animation: p2 .75s forwards ease-out; }
+    .break-place.arrow .p3 { animation: p3 .75s forwards ease-out; }
+    .break-place.arrow .p4 { animation: p4 .75s forwards ease-out; }
+    .break-place.arrow .p5 { animation: p5 .75s forwards ease-out; }
+    .break-place.arrow .p6 { animation: p6 .75s forwards ease-out; }
+    .break-place.arrow .p7 { animation: p7 .75s forwards ease-out; }
+
+    @keyframes p1 {
+      to { transform: translate(-50%, -190px) rotate(45deg) scale(.92); }
+    }
+
+    @keyframes p2 {
+      to { transform: translate(-112px, -142px) rotate(-28deg) scale(.86); }
+    }
+
+    @keyframes p3 {
+      to { transform: translate(54px, -142px) rotate(28deg) scale(.86); }
+    }
+
+    @keyframes p4 {
+      to { transform: translate(-50%, -105px) rotate(0deg) scale(.78); }
+    }
+
+    @keyframes p5 {
+      to { transform: translate(-50%, -70px) rotate(0deg) scale(.74); }
+    }
+
+    @keyframes p6 {
+      to { transform: translate(-50%, -35px) rotate(0deg) scale(.7); }
+    }
+
+    @keyframes p7 {
+      to { transform: translate(-50%, -3px) rotate(0deg) scale(.66); }
+    }
+
+    .broken-hint {
+      opacity: 0;
+      color: #a8a8a8;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 8px;
+      transition: .5s ease;
+    }
+
+    .broken-hint.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 420px) {
+      .card {
+        min-height: 450px;
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .question {
+        font-size: 21px;
+      }
+
+      .piece {
+        width: 48px;
+        height: 31px;
+      }
+
+      @keyframes p1 {
+        to { transform: translate(-50%, -176px) rotate(45deg) scale(.88); }
+      }
+
+      @keyframes p2 {
+        to { transform: translate(-92px, -132px) rotate(-28deg) scale(.82); }
+      }
+
+      @keyframes p3 {
+        to { transform: translate(44px, -132px) rotate(28deg) scale(.82); }
+      }
+
+      @keyframes p4 {
+        to { transform: translate(-50%, -98px) rotate(0deg) scale(.74); }
+      }
+
+      @keyframes p5 {
+        to { transform: translate(-50%, -66px) rotate(0deg) scale(.7); }
+      }
+
+      @keyframes p6 {
+        to { transform: translate(-50%, -34px) rotate(0deg) scale(.66); }
+      }
+
+      @keyframes p7 {
+        to { transform: translate(-50%, -4px) rotate(0deg) scale(.62); }
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="line"></div>
+  <div class="line"></div>
+  <div class="line"></div>
+
+  <div class="wrap">
+    <main class="card">
+      <section id="start">
+        <div class="tag">interface check</div>
+        <h1>Проверь, норм сайт или нет</h1>
+        <p>
+          Это мини-проверка интерфейса: читается ли текст, не бесят ли кнопки,
+          и не выглядит ли всё как работа человека, который делал это ночью.
+        </p>
+
+        <button onclick="startIntro()">Проверить</button>
+        <button class="ghost" onclick="skip()">Не проверять</button>
+
+        <div class="muted">
+          Нижняя кнопка тоже нужна. Для теста упрямства интерфейса.
+        </div>
+      </section>
+
+      <section id="skip" class="hidden">
+        <div class="tag">button test</div>
+        <h1>Кнопка работает</h1>
+        <p>
+          Ты нажала “не проверять”. Отлично, значит кнопки нажимаются.
+          Уже какой-то прогресс.
+        </p>
+
+        <button onclick="startIntro()">Ладно, дальше</button>
+        <button class="ghost" onclick="skipAgain()">Ещё раз не проверять</button>
+
+        <div class="muted" id="skipHint">
+          Сайт делает вид, что не осуждает.
+        </div>
+      </section>
+
+      <section id="intro" class="hidden">
+        <div class="tag" id="introTag">screen 1 / 3</div>
+        <h1 id="introTitle"></h1>
+
+        <div class="box">
+          <p id="introText"></p>
+        </div>
+
+        <button id="introBtn" onclick="introNext()" disabled>Читаю...</button>
+
+        <div class="muted" id="introStatus">
+          Кнопка включится через секунду.
+        </div>
+      </section>
+
+      <section id="quiz" class="hidden">
+        <div class="tag" id="count">check 1 / 4</div>
+        <div class="progress">
+          <div class="bar" id="bar"></div>
+        </div>
+
+        <div class="question" id="question"></div>
+        <div class="answers" id="answers"></div>
+
+        <div class="comment" id="comment">
+          Выбирай что ближе. Это типа UX-тест.
+        </div>
+      </section>
+
+      <section id="loading" class="hidden">
+        <div class="tag">report loading</div>
+        <div class="typing cursor" id="typing"></div>
+      </section>
+
+      <section id="final" class="hidden">
+        <div class="tag">report</div>
+
+        <div class="main-result">
+          Отчёт: сайт почти нормальный.
+        </div>
+
+        <div class="box">
+          <p>
+            Текст читается, кнопки нажимаются, лишней мишуры нет.
+            Но сайт нашёл один побочный эффект.
+          </p>
+        </div>
+
+        <button id="effectBtn" onclick="openDetails()">Показать побочный эффект</button>
+
+        <div class="break-place" id="breakPlace">
+          <button id="refuseBtn" class="ghost" onclick="breakRefuseButton()">Не показывать</button>
+
+          <div class="piece p1"></div>
+          <div class="piece p2"></div>
+          <div class="piece p3"></div>
+          <div class="piece p4"></div>
+          <div class="piece p5"></div>
+          <div class="piece p6"></div>
+          <div class="piece p7"></div>
+        </div>
+
+        <div class="broken-hint" id="brokenHint">
+          Кнопка отказа не выдержала и сама показывает, куда нажимать.
+        </div>
+
+        <div class="details" id="details">
+          <p class="important">
+            Есть человек, после общения с которым день становится не таким тупым.
+          </p>
+
+          <p>
+            Сайт не будет называть это громкими словами.
+            Просто иногда хочется не только случайно пересечься и поговорить пару минут,
+            а нормально прогуляться и поржать без спешки.
+          </p>
+
+          <div class="safe-note">
+            Если не хочется — всё спокойно. Тогда считаем, что это был просто тест интерфейса.
+            Кнопки работают, сайт закрывается, жизнь продолжается.
+          </div>
+
+          <button onclick="good()">Поняла</button>
+          <button class="ghost" onclick="time()">Подумаю</button>
+          <button class="ghost" onclick="noPressure()">Это просто сайт</button>
+
+          <div class="tiny">
+            Проверка завершена. Ошибок почти нет.
+          </div>
+        </div>
+
+        <div class="dot-zone">
+          <div class="dot" onclick="openDetails()"></div>
+          <div class="tiny">дублирующая кнопка, потому что обычные кнопки слишком очевидные</div>
+        </div>
+      </section>
+
+      <section id="ending" class="hidden">
+        <div class="tag">done</div>
+        <h1 id="endingTitle"></h1>
+        <p id="endingText"></p>
+        <button onclick="location.reload()">Открыть сначала</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const introSteps = [
+      {
+        title: "Экран первый",
+        text: "Проверка читаемости. Если ты это читаешь, значит текст видно. Если не читаешь — сайт всё равно делает вид, что всё хорошо."
+      },
+      {
+        title: "Экран второй",
+        text: "Проверка терпения. Ты умничка. А умничек — у тумбочек. Всё, важный текстовый блок вставлен."
+      },
+      {
+        title: "Экран третий",
+        text: "Проверка кнопок. Дальше будут вопросы не про ум, а про то, как сайт ощущается. Отвечай как хочешь."
+      }
+    ];
+
+    const questions = [
+      {
+        text: "Какой вариант звучит лучше для сайта?",
+        answers: ["коротко и понятно", "спокойно", "без лишнего пафоса", "чтобы было немного с подъёбом"],
+        comment: "Сайт записал: подъёб можно, но без перебора."
+      },
+      {
+        text: "Что бесит в сайтах больше?",
+        answers: ["слишком много текста", "кнопки непонятно где", "всё слишком яркое", "когда сайт умничает"],
+        comment: "Сайт делает вид, что не принял это лично."
+      },
+      {
+        text: "Что лучше в конце?",
+        answers: ["обычный отчёт", "неожиданный вывод", "маленькая скрытая деталь", "чтобы не было кринжа"],
+        comment: "Сайт услышал: кринж убираем."
+      },
+      {
+        text: "Финальная проверка:",
+        answers: ["показать отчёт", "ладно, дальше", "я дочитала", "сайт странный, но пусть живёт"],
+        comment: "Почти готово. Сейчас будет отчёт."
+      }
+    ];
+
+    let introIndex = 0;
+    let current = 0;
+    let skipClicks = 0;
+    let refuseBroken = false;
+
+    const start = document.getElementById("start");
+    const skipSection = document.getElementById("skip");
+    const intro = document.getElementById("intro");
+    const quiz = document.getElementById("quiz");
+    const loading = document.getElementById("loading");
+    const final = document.getElementById("final");
+    const ending = document.getElementById("ending");
+
+    const question = document.getElementById("question");
+    const answers = document.getElementById("answers");
+    const count = document.getElementById("count");
+    const bar = document.getElementById("bar");
+    const comment = document.getElementById("comment");
+
+    function hideAll() {
+      start.classList.add("hidden");
+      skipSection.classList.add("hidden");
+      intro.classList.add("hidden");
+      quiz.classList.add("hidden");
+      loading.classList.add("hidden");
+      final.classList.add("hidden");
+      ending.classList.add("hidden");
+    }
+
+    function skip() {
+      hideAll();
+      skipSection.classList.remove("hidden");
+    }
+
+    function skipAgain() {
+      skipClicks++;
+      const hint = document.getElementById("skipHint");
+
+      if (skipClicks === 1) {
+        hint.textContent = "Вторая попытка засчитана. Кнопка реально работает, можно идти дальше.";
+      } else {
+        hint.textContent = "Ладно, сайт понял. Но проверку всё равно надо закончить.";
+        setTimeout(startIntro, 900);
+      }
+    }
+
+    function startIntro() {
+      hideAll();
+      intro.classList.remove("hidden");
+      introIndex = 0;
+      showIntro();
+    }
+
+    function showIntro() {
+      const step = introSteps[introIndex];
+      const btn = document.getElementById("introBtn");
+      const status = document.getElementById("introStatus");
+
+      document.getElementById("introTag").textContent = `screen ${introIndex + 1} / ${introSteps.length}`;
+      document.getElementById("introTitle").textContent = step.title;
+      document.getElementById("introText").textContent = step.text;
+
+      btn.disabled = true;
+      btn.textContent = "Читаю...";
+      status.textContent = "Кнопка включится через секунду, чтобы экран не проскочил.";
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = introIndex === introSteps.length - 1 ? "К проверке" : "Дальше";
+        status.textContent = "Теперь можно.";
+      }, 1300);
+    }
+
+    function introNext() {
+      introIndex++;
+
+      if (introIndex < introSteps.length) {
+        showIntro();
+      } else {
+        startQuiz();
+      }
+    }
+
+    function startQuiz() {
+      hideAll();
+      quiz.classList.remove("hidden");
+      current = 0;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const item = questions[current];
+
+      count.textContent = `check ${current + 1} / ${questions.length}`;
+      bar.style.width = `${((current + 1) / questions.length) * 100}%`;
+      question.textContent = item.text;
+      comment.textContent = "Выбирай что ближе. Это типа UX-тест.";
+      answers.innerHTML = "";
+
+      item.answers.forEach(text => {
+        const btn = document.createElement("button");
+        btn.className = "answer";
+        btn.textContent = text;
+        btn.onclick = () => next(item.comment);
+        answers.appendChild(btn);
+      });
+    }
+
+    function next(newComment) {
+      comment.textContent = newComment;
+
+      setTimeout(() => {
+        current++;
+
+        if (current < questions.length) {
+          renderQuestion();
+        } else {
+          hideAll();
+          loading.classList.remove("hidden");
+          typeText();
+        }
+      }, 520);
+    }
+
+    function typeText() {
+      const text = "Собираю отчёт... проверяю кнопки... ищу побочные эффекты...";
+      const box = document.getElementById("typing");
+      box.textContent = "";
+      let i = 0;
+
+      const timer = setInterval(() => {
+        box.textContent += text[i];
+        i++;
+
+        if (i >= text.length) {
+          clearInterval(timer);
+
+          setTimeout(() => {
+            hideAll();
+            final.classList.remove("hidden");
+          }, 700);
+        }
+      }, 48);
+    }
+
+    function breakRefuseButton() {
+      if (refuseBroken) return;
+      refuseBroken = true;
+
+      const refuseBtn = document.getElementById("refuseBtn");
+      const breakPlace = document.getElementById("breakPlace");
+      const effectBtn = document.getElementById("effectBtn");
+      const brokenHint = document.getElementById("brokenHint");
+
+      refuseBtn.classList.add("broken");
+      breakPlace.classList.add("arrow");
+
+      setTimeout(() => {
+        effectBtn.classList.add("effect-attention");
+        brokenHint.classList.add("show");
+      }, 550);
+
+      setTimeout(() => {
+        effectBtn.textContent = "Показать побочный эффект";
+      }, 900);
+    }
+
+    function openDetails() {
+      document.getElementById("details").classList.add("show");
+      document.getElementById("effectBtn").classList.remove("effect-attention");
+    }
+
+    function good() {
+      hideAll();
+      ending.classList.remove("hidden");
+
+      document.getElementById("endingTitle").textContent = "Проверка завершена";
+      document.getElementById("endingText").textContent =
+        "Сайт ничего не требует. Просто оставил вывод.";
+    }
+
+    function time() {
+      hideAll();
+      ending.classList.remove("hidden");
+
+      document.getElementById("endingTitle").textContent = "Нормально";
+      document.getElementById("endingText").textContent =
+        "Можно подумать. Сайт никуда не торопит.";
+    }
+
+    function noPressure() {
+      hideAll();
+      ending.classList.remove("hidden");
+
+      document.getElementById("endingTitle").textContent = "Окей";
+      document.getElementById("endingText").textContent =
+        "Тогда это просто сайт. Тоже нормальный результат.";
+    }
+  </script>
+</body>
+</html>
